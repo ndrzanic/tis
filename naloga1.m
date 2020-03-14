@@ -51,7 +51,7 @@ if p >= 1
             H2 = H2 + P(i) * -log2(P(1,i));
         end
         H2temp = H2;
-        H2 = H2 - H1;
+        H2 = H2 - H1temp;
         %izracunan H(X1, X2, X3), to je spremenljivka H2temp ter izracunan
         %H(X3|X1, X2), to je spremenljivka H2
         if p == 3 
@@ -81,5 +81,6 @@ end
         H = H3;
     end
 end
+
 
 
