@@ -32,10 +32,8 @@ elseif p == 1
         besedilo(i+1,1);
         pari(1,i) = strcat(besedilo(i,1),besedilo(i+1,1))
     end
-    pari
-    [GC, GR] = groupcounts(besedilo,'rows');
-    GC
-    GR
+    pari;
+    [U, iA, iB] = unique(pari, 'rows')
 end
 besedilo';
 H;
@@ -48,6 +46,5 @@ for i=1:size(p,2)
 end
 H;
 end
-
 
 
