@@ -42,7 +42,7 @@ if p >= 1
     H1 = H1 - H0;
     %izracunan H(X1, X2), to je spremenljivka H1temp ter izracunan
     %H(X2|X1), to je spremenljivka H1
-    if p >= 0 
+    if p >= 2
         trojcki = [besedilo(1:end-2); besedilo(2:end-1); besedilo(3:end)]';
         [U, iA, iB] = unique(trojcki, 'rows');
         [GC, GR] = groupcounts(iB);
