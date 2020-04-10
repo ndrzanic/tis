@@ -1,0 +1,40 @@
+function [izhod, R, kodBela, kodCrna] = naloga2(vhod)
+% Kodiranje slike "vhod" po prilagojenem standardu ITU-T T.4.
+%
+% vhod     - matrika, ki predstavlja sliko [n X 1728]
+% izhod    - binarni vrsticni vektor
+% R        - kompresijsko razmerje
+% kodBela  - tabela dolzin kodnih zamenjav belih slikovnih tock
+% kodCrna  - tabela dolzin kodnih zamenjav crnih slikovnih tock
+
+izhod = NaN;
+R = NaN;
+kodBela = [];
+kodCrna = [];
+J=find(diff([vhod(1)-1, vhod]));
+relMat=[vhod(J); diff([J, numel(vhod)+1])];
+if(vhod(1,1) == 0) 
+    relMat = cat(2, [1;0], relMat);
+end
+[a b] = find(relMat(1,:) == 1);
+beli = relMat(2, b);
+stBelih = size(beli, 2);
+sumBelih = sum(beli); 
+[a b] = find(relMat(1,:) == 0);
+crni = relMat(2, b);
+stCrnih = size(crni, 2); 
+sumCrnih = sum(crni);
+[bincounts, ind] = groupcounts(crni');
+pCrni = bincounts/stCrnih;
+pCrni = sort(pCrni, "descend")
+zamenjave(pCrni')
+
+% 1 - bela, 0 - crna
+end
+
+function l = zamenjave(p)
+    arr = zeros(size(p,2) + ceil(log2(size(p,2))), 4)
+    arr(1:size(p,2)) = p
+    for i = 1:ceil(log2(size(p,2)))
+    end
+end
