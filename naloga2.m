@@ -94,7 +94,11 @@ function l = zamenjave(a)
     l = zeros(size(a,1), 3);
     l(:,1) = a(:,1);
     l(:,2) = a(:,2);
-    l(:,3 )= 0:size(a,1)-1;
+    l(1,3) = 0;
+    for i=2:size(a,1) 
+        l(i, 3) = l(i-1,3) + 1;
+        l(i, 3) = l(i,3) * power(2,(l(i,1) - l(i-1,1)));
+    end
 end
 
 function izhod = kodiranje(beli, crni, lBeli, lCrni) 
@@ -111,9 +115,9 @@ function izhod = kodiranje(beli, crni, lBeli, lCrni)
             belElement = beli(1, iterW);
             ind = find(lBeli(:,2) == belElement);
             belDolzina = lBeli(ind, 1);
-            belTest = power(2, lBeli(ind,3))
+            belTest = lBeli(ind, 3);
             belKod = dec2bin(belTest)
-            [belDolzina, belTest]
+            [belDolzina, belTest];
         else 
             iterB = iterB + 1;
             crnElement = crni(1, iterB);
