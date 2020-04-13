@@ -7,44 +7,56 @@ function [izhod, R, kodBela, kodCrna] = naloga2(vhod)
 % kodBela  - tabela dolzin kodnih zamenjav belih slikovnih tock
 % kodCrna  - tabela dolzin kodnih zamenjav crnih slikovnih tock
 
-izhod = NaN;
-R = NaN;
 kodBela = [];
 kodCrna = [];
-J=find(diff([vhod(1)-1, vhod]));
-relMat=[vhod(J); diff([J, numel(vhod)+1])];
-if(vhod(1,1) == 0) 
-    relMat = cat(2, [1;0], relMat);
-end
-[a b] = find(relMat(1,:) == 1);
-beli = relMat(2, b);
-stBelih = size(beli, 2);
-sumBelih = sum(beli); 
-[a b] = find(relMat(1,:) == 0);
-crni = relMat(2, b);
-stCrnih = size(crni, 2); 
-sumCrnih = sum(crni);
-[bincountsB, indB] = groupcounts(crni');
-testB = sortrows([bincountsB, indB], "descend");
-bincountsB = testB(:,1);
-indB = testB(:,2);
-pCrni = bincountsB/stCrnih;
-lCrni = dolzine(indB, pCrni');
 
-[bincountsW, indW] = groupcounts(beli');
-testW = sortrows([bincountsW, indW]);
-bincountsW = testW(:,1);
-indW = testW(:,2);
-pBeli = bincountsW/stBelih;
-lBeli = dolzine(indW, pBeli');
-lBeli = sortrows(lBeli);
-lCrni = sortrows(lCrni);
-% 1 - bela, 0 - crna
-kodBela = lBeli(:,1)';
-kodCrna = lCrni(:,1)';
-zBeli = zamenjave(lBeli);
-zCrni = zamenjave(lCrni);   
-izhod = kodiranje(beli, crni, zBeli, zCrni)
+    relMatTemp = [];
+    relMat = [];
+    i = 1;
+    while i <= size(vhod,1)
+        vh = vhod(i, :);
+        J = find(diff([vh(1) - 1, vh]));
+        relMatTemp = [vh(J); diff([J, numel(vh) + 1])];
+        if(vh(1,1) == 0) 
+            relMatTemp = cat(2, [1;0], relMatTemp);
+        end
+        relMat = cat(2, relMat, relMatTemp) ;
+        i = i+1;
+    end
+    [a b] = find(relMat(1,:) == 1);
+    beli = relMat(2, b);
+    stBelih = size(beli, 2);
+    sumBelih = sum(beli); 
+    beli;
+    [a b] = find(relMat(1,:) == 0);
+    crni = relMat(2, b);
+    stCrnih = size(crni, 2); 
+    sumCrnih = sum(crni);
+    crni;
+    [bincountsB, indB] = groupcounts(crni');
+    testB = sortrows([bincountsB, indB], "descend");
+    bincountsB = testB(:,1);
+    indB = testB(:,2);
+    pCrni = bincountsB/stCrnih;
+    %RELMAT JE OK 
+    
+    lCrni = dolzine(indB, pCrni')
+
+    [bincountsW, indW] = groupcounts(beli');
+    testW = sortrows([bincountsW, indW]);
+    bincountsW = testW(:,1);
+    indW = testW(:,2);
+    pBeli = bincountsW/stBelih;
+    lBeli = dolzine(indW, pBeli');
+    lBeli = sortrows(lBeli);
+    lCrni = sortrows(lCrni);
+    % 1 - bela, 0 - crna
+    kodBela = [lBeli(:,2),lBeli(:,1)];
+    kodCrna = [lCrni(:,2),lCrni(:,1)];
+    zBeli = zamenjave(lBeli);
+    zCrni = zamenjave(lCrni);   
+    izhod = kodiranje(beli, crni, zBeli, zCrni);
+    R = size(izhod,2) / size(vhod,2)
 end
 
 function l = dolzine(z, p)
@@ -77,6 +89,7 @@ function l = dolzine(z, p)
         arr;
         iter = iter + (ceil(log2(size(p,2)))) - i;
     end
+    arr;
     arr(length(arr(:,1)), 4) = 0;
     n = length(arr(:,1));
     for i=1:size(p,2)-1
@@ -102,29 +115,46 @@ function l = zamenjave(a)
 end
 
 function izhod = kodiranje(beli, crni, lBeli, lCrni) 
-    beli
-    crni
-    lBeli
-    lCrni
+    beli;
+    crni;
+    lBeli;
+    lCrni;
     iterW = 0;
     iterB = 0;
-    %for i=1:(size(beli,2) + size(crni,2))
-    for i=1:3
+    iter = 1;
+    izhod = zeros(1, sum(lBeli(:, 1)) + sum(lCrni(:,1)));
+    for i=1:(size(beli,2) + size(crni,2))
+    %for i=1:3
         if (mod(i,2) ~= 0) % character je bel 
             iterW = iterW + 1;
             belElement = beli(1, iterW);
             ind = find(lBeli(:,2) == belElement);
             belDolzina = lBeli(ind, 1);
             belTest = lBeli(ind, 3);
-            belKod = dec2bin(belTest)
-            [belDolzina, belTest];
+            belKod = dec2bin(belTest);
+            for k=1:(belDolzina - length(belKod))
+                izhod(1, iter) = 0;
+                iter = iter + 1;
+            end
+            for j=1:length(belKod)
+                izhod(1, iter) = str2double(belKod(1,j));
+                iter = iter + 1;
+            end
         else 
             iterB = iterB + 1;
             crnElement = crni(1, iterB);
             ind = find(lCrni(:,2) == crnElement);
             crnDolzina = lCrni(ind, 1);
             crnTest = lCrni(ind, 3);
-            crnKod = dec2bin(crnTest)
+            crnKod = dec2bin(crnTest);
+            for k=1:(crnDolzina - length(crnKod))
+                izhod(1, iter) = 0;
+                iter = iter + 1;
+            end
+            for j=1:crnDolzina
+                izhod(1, iter) = str2double(crnKod(1,j));
+                iter = iter + 1;
+            end
         end
     end
 end
